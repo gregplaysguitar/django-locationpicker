@@ -27,6 +27,8 @@ class LocationPickerWidget(forms.TextInput):
 class LocationField(models.CharField):
 
     def __init__(self, *args, **kwargs):
+        if not 'max_length' in kwargs:
+            kwargs['max_length'] = 32
         super(LocationField, self).__init__(*args, **kwargs)
     
     def formfield(self, **kwargs):
