@@ -26,6 +26,9 @@ class LocationPickerWidget(forms.TextInput):
 
 class LocationField(models.CharField):
 
+    def __init__(self, *args, **kwargs):
+        super(LocationField, self).__init__(*args, **kwargs)
+    
     def formfield(self, **kwargs):
         kwargs['widget'] = LocationPickerWidget
         return super(LocationField, self).formfield(**kwargs)
