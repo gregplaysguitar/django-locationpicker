@@ -11,8 +11,8 @@ $(document).ready(function(){
         this.parentNode.insertBefore(map, this);
         $(this).css('display','none');
 
-        var lat = 55.950161;
-        var lng = -3.187408;
+        var lat = -43.531065;
+        var lng = 172.636671;
         if (this.value.split(',').length == 2) {
             values = this.value.split(',');
             lat = values[0];
