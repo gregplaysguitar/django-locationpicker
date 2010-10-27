@@ -6,7 +6,7 @@ class LocationPickerWidget(forms.TextInput):
     class Media:
         css = {
             'all': (
-                settings.MEDIA_URL + 'c/lib/location_picker.css',
+                settings.MEDIA_URL + 'c/location_picker.css',
             )
         }
         js = (
