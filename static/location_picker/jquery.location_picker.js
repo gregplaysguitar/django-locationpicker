@@ -1,42 +1,43 @@
-google.load("maps", "2");
-
 $(document).unload(function(){
-    GUnload();
+    google.maps.Unload();
 });
 
 $(document).ready(function(){
     $("input.location_picker").each(function (i) {
-        var map = document.createElement('div');
-        map.className = "location_picker_map";
-        this.parentNode.insertBefore(map, this);
-        $(this).css('display','none');
+        var me = $(this),
+            mapDiv = $('<div>').insertBefore(me).addClass('location_picker_map');
+        
+        me.css('display','none');
 
         var lat = -43.531065;
         var lng = 172.636671;
-        if (this.value.split(',').length == 2) {
+        if (me.val().split(/,\s*/).length == 2) {
             values = this.value.split(',');
             lat = values[0];
             lng = values[1];
         }
-        var center = new GLatLng(lat,lng);
+        var center = new google.maps.LatLng(lat, lng);
 
-        var map = new google.maps.Map2(map);
-        map.addControl(new GSmallMapControl());
-        map.setCenter(center, 13);
-
-        this.onMapClick = function(overlay, point) {
-            this.value = point.lat()+','+point.lng();
-            if (this.marker == null) {
-                this.marker = new GMarker(point);
-                this.map.addOverlay(this.marker);
-            } else {
-                this.marker.setPoint(point);
-            }
-        }
-
-        this.marker = new GMarker(center);
-        map.addOverlay(this.marker);
-
-        GEvent.bind(map, "click", this, this.onMapClick);
+        var map = new google.maps.Map(mapDiv[0], {
+            zoom: 15,
+            center: center,
+            scaleControl: true,
+            navigationControl: true,
+            navigationControlOptions: {
+                position: google.maps.ControlPosition.RIGHT
+            },
+            disableDefaultUI: true,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+        
+        var marker = new google.maps.Marker({
+            position: center,
+            map: map
+        });
+        
+        google.maps.event.addListener(map, 'click', function (e) {
+            me.val(e.latLng.Ua + ',' + e.latLng.Va);
+            marker.setPosition(e.latLng);
+        });
     });
 });
