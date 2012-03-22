@@ -2,16 +2,19 @@ from django import forms
 from django.db import models
 from django.conf import settings
 
+# fall back to MEDIA_URL for old setups
+STATIC_URL = getattr(settings, 'LOCATION_PICKER_STATIC_URL', '%slocation_picker/' % settings.STATIC_URL)
+
 class LocationPickerWidget(forms.TextInput):
     class Media:
         css = {
             'all': (
-                settings.MEDIA_URL + 'c/location_picker.css',
+            '%slocation_picker.css' % STATIC_URL,
             )
         }
         js = (
             'http://www.google.com/jsapi?key=' + settings.GOOGLE_MAPS_API_KEY,
-            settings.MEDIA_URL + 'j/lib/jquery.location_picker.js',
+            '%sjquery.location_picker.js' % STATIC_URL,
         )
 
     def __init__(self, language=None, attrs=None):
