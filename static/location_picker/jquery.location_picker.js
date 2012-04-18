@@ -6,7 +6,7 @@ $(document).ready(function(){
     $("input.location_picker").each(function (i) {
         var me = $(this),
             mapDiv = $('<div>').insertBefore(me).addClass('location_picker_map');
-        
+
         me.css('display','none');
 
         var lat = -43.531065;
@@ -29,14 +29,14 @@ $(document).ready(function(){
             disableDefaultUI: true,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         });
-        
+
         var marker = new google.maps.Marker({
             position: center,
             map: map
         });
-        
+
         google.maps.event.addListener(map, 'click', function (e) {
-            me.val(e.latLng.Ua + ',' + e.latLng.Va);
+            me.val(e.latLng['Za'] + ',' + e.latLng['$a']);
             marker.setPosition(e.latLng);
         });
     });

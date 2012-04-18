@@ -33,7 +33,7 @@ class LocationField(models.CharField):
         if not 'max_length' in kwargs:
             kwargs['max_length'] = 255
         super(LocationField, self).__init__(*args, **kwargs)
-    
+
     def formfield(self, **kwargs):
         kwargs['widget'] = LocationPickerWidget
         return super(LocationField, self).formfield(**kwargs)
