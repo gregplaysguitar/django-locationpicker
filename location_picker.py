@@ -1,8 +1,10 @@
 from django import forms
 from django.db import models
 from django.conf import settings
+from django.core.exceptions import ValidationError
 
-# fall back to MEDIA_URL for old setups
+
+# See readme.markdown
 STATIC_URL = getattr(settings, 'LOCATION_PICKER_STATIC_URL', '%slocation_picker/' % settings.STATIC_URL)
 
 class LocationPickerWidget(forms.TextInput):
@@ -37,3 +39,11 @@ class LocationField(models.CharField):
     def formfield(self, **kwargs):
         kwargs['widget'] = LocationPickerWidget
         return super(LocationField, self).formfield(**kwargs)
+
+    def validate(self, value, obj):
+        super(LocationField, self).validate(value, obj)
+        try:
+            x, y = value.split(',')
+            float(x.strip()), float(y.strip())
+        except:
+            raise ValidationError('Bad coordinate format - should be ll,la - eg. 43.5343,172.6236')
