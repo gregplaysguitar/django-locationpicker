@@ -36,7 +36,7 @@ $(document).ready(function(){
         });
 
         google.maps.event.addListener(map, 'click', function (e) {
-            me.val(e.latLng['Za'] + ',' + e.latLng['$a']);
+            me.val(e.latLng.lat() + ',' + e.latLng.lng());
             marker.setPosition(e.latLng);
         });
     });
