@@ -8,16 +8,15 @@ from django.core.exceptions import ValidationError
 STATIC_URL = getattr(settings, 'LOCATION_PICKER_STATIC_URL', '%slocation_picker/' % settings.STATIC_URL)
 
 class LocationPickerWidget(forms.TextInput):
+    '''Widget which provides a google maps-powered widget for choosing
+       a location in the format lat,lng.'''
+       
     class Media:
         css = {
-            'all': (
-            '%slocation_picker.css' % STATIC_URL,
-            )
+            'all': ('%slocation_picker.css' % STATIC_URL,)
         }
-        js = (
-            'http://maps.google.com/maps/api/js?sensor=false',
-            '%sjquery.location_picker.js' % STATIC_URL,
-        )
+        js = ('http://maps.google.com/maps/api/js?sensor=false',
+              '%sjquery.location_picker.js' % STATIC_URL,)
 
     def __init__(self, language=None, attrs=None):
         self.language = language or settings.LANGUAGE_CODE[:2]
@@ -29,11 +28,17 @@ class LocationPickerWidget(forms.TextInput):
         attrs['class'] = 'location_picker'
         return super(LocationPickerWidget, self).render(name, value, attrs)
 
-class LocationField(models.CharField):
 
+class LocationField(models.CharField):
+    '''A django model field which stores a lat/lng pair, validating the 
+       format as lat,lng - ie.
+       
+       43.5343,172.6236'''
+    
+    DEFAULT_KWARGS = {'max_length': 255}
+    
     def __init__(self, *args, **kwargs):
-        if not 'max_length' in kwargs:
-            kwargs['max_length'] = 255
+        kwargs = dict(list(self.DEFAULT_KWARGS.items()) + list(kwargs.items()))
         super(LocationField, self).__init__(*args, **kwargs)
 
     def formfield(self, **kwargs):
@@ -46,4 +51,15 @@ class LocationField(models.CharField):
             x, y = value.split(',')
             float(x.strip()), float(y.strip())
         except:
-            raise ValidationError('Bad coordinate format - should be ll,la - eg. 43.5343,172.6236')
+            raise ValidationError('Bad coordinate format - should be lat,lng - eg. 43.5343,172.6236')
+    
+    def south_field_triple(self):
+        ''''Returns a suitable description of this field for South.'''
+        
+        from south.modelsinspector import introspector
+        args, kwargs = introspector(models.CharField)
+        kwargs = dict(list(self.DEFAULT_KWARGS.items()) + list(kwargs.items()))
+        return ('django.db.models.fields.CharField', args, kwargs)
+        
+
+
